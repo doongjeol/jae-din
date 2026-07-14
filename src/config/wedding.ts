@@ -15,7 +15,7 @@ export const weddingConfig = {
   meta: {
     title: "이재훈 ♥ 김다인 결혼합니다",
     description: "2026년 11월 28일 토요일 오후 4시 10분. 저희 결혼식에 초대합니다.",
-    ogImage: "/og-thumbnail.jpg", // 1200x630, g8 사진 크롭
+    ogImage: "/og-thumbnail.jpg", // 1200x630, g7 사진 크롭
     url: "https://jae-din.cd8025.workers.dev",
     noIndex: true,
   },
