@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
-import { Link2, Share } from "lucide-react";
+import { CalendarPlus, Link2, Share } from "lucide-react";
 import { toast } from "sonner";
 import { weddingConfig } from "@/config/wedding";
 import { loadKakaoShareScript } from "@/lib/kakao";
 import { useClipboard } from "@/hooks/useClipboard";
+import { downloadWeddingIcs } from "@/lib/calendar";
 
 async function shareToKakao() {
   const ok = await loadKakaoShareScript();
@@ -56,6 +57,21 @@ export function ShareFooter() {
       >
         청첩장 주소 복사하기
         <Link2 className="h-4 w-4" aria-hidden />
+      </motion.button>
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.98 }}
+        onClick={() => {
+          try {
+            downloadWeddingIcs();
+          } catch {
+            toast("일정 등록에 실패했어요. 잠시 후 다시 시도해주세요.");
+          }
+        }}
+        className="flex w-full items-center justify-between rounded-xl border border-blush-deep/40 bg-white/60 px-5 py-3.5 text-sm text-foreground transition hover:bg-blush/40"
+      >
+        일정 등록하기
+        <CalendarPlus className="h-4 w-4" aria-hidden />
       </motion.button>
     </div>
   );

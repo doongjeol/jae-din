@@ -538,7 +538,7 @@ function Invitation() {
 
           {/* ------- 갤러리 ------- */}
           <section id="gallery" className="bg-white px-6 py-24">
-            <SectionTitle title="Gallery" subtitle="우리의 순간들" />
+            <SectionTitle title="Gallery" />
             <div
               className={`grid gap-1.5 ${
                 weddingConfig.gallery.columns === 3 ? "grid-cols-3" : "grid-cols-2"
@@ -593,9 +593,9 @@ function Invitation() {
             <SectionTitle title="Account" subtitle="마음 전하실 곳" />
             <Reveal>
               <p className="mx-auto mb-8 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
-                참석이 어려우신 분들을 위해
+                소중한 축하를 보내주셔서 감사드리며,
                 <br />
-                계좌번호를 안내해 드립니다.
+                따뜻한 마음에 깊이 감사드립니다.
               </p>
             </Reveal>
             <div className="mx-auto max-w-sm space-y-3">
