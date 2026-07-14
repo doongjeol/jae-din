@@ -48,32 +48,33 @@
 :root {
   --radius: 0.5rem;
 
-  --background: oklch(0.985 0.008 60);
-  --foreground: oklch(0.28 0.02 40);
-  --ink: oklch(0.28 0.02 40);
+  /* 세이지 그린 팔레트 — toourguest.com/preview/martinique computed style 기준 (기획서 4.1) */
+  --background: #dde6cc; /* 소프트 세이지 그린 */
+  --foreground: #555555; /* 웜 그레이 */
+  --ink: #555555;
 
-  --blush: oklch(0.93 0.03 25);
-  --blush-deep: oklch(0.78 0.06 22);
-  --sand: oklch(0.94 0.02 70);
+  --blush: #c9d5af; /* 라인/보더 — 은은한 세이지 */
+  --blush-deep: #a0b575; /* 포인트 — 올리브 그린 */
+  --sand: #ebf1e0; /* 서브 배경 — 라이트 민트 */
 
-  --card: oklch(0.995 0.005 60);
+  --card: #f6f8ee;
   --card-foreground: var(--foreground);
-  --popover: oklch(0.995 0.005 60);
+  --popover: #f6f8ee;
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.55 0.08 25);
-  --primary-foreground: oklch(0.985 0.008 60);
-  --secondary: oklch(0.94 0.02 60);
+  --primary: #7c8a60; /* 딥 모스 그린 — 호버/강조용 */
+  --primary-foreground: #f7f9f0;
+  --secondary: #ebf1e0;
   --secondary-foreground: var(--foreground);
-  --muted: oklch(0.95 0.015 60);
-  --muted-foreground: oklch(0.52 0.02 40);
-  --accent: oklch(0.92 0.04 25);
+  --muted: #ebf1e0;
+  --muted-foreground: #999999; /* 소프트 그레이 */
+  --accent: #c9d5af;
   --accent-foreground: var(--foreground);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.9 0.015 50);
-  --input: oklch(0.9 0.015 50);
-  --ring: oklch(0.78 0.06 22);
+  --border: #c9d5af;
+  --input: #c9d5af;
+  --ring: #a0b575;
 }
 
 .dark {
@@ -137,12 +138,52 @@
   animation: soft-fade 1.4s ease-out both;
 }
 
-@utility reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+/* Hero background: fade in, then a slow Ken Burns drift (transform-only). */
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
 }
-@utility reveal-in {
-  opacity: 1;
-  transform: translateY(0);
+@utility animate-hero-img {
+  animation:
+    soft-fade 1.4s ease-out both,
+    kenburns 14s linear both;
+}
+
+/* Scroll-down hint: soft, slow bob. */
+@keyframes indicator-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(6px); opacity: 0.9; }
+}
+@utility animate-indicator {
+  animation: indicator-bob 2.4s ease-in-out infinite;
+}
+
+/* Wedding-date cell: gentle breathing glow. */
+@keyframes dday-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--blush-deep) 0%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--blush-deep) 16%, transparent); }
+}
+@utility dday-glow {
+  animation: dday-pulse 3.2s ease-in-out infinite;
+}
+
+/* Countdown rollover celebration: brief soft glow, faded by transition-shadow. */
+.countdown-glow {
+  box-shadow: 0 0 28px -4px color-mix(in oklab, var(--blush-deep) 45%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-img {
+    animation: none;
+    opacity: 1;
+  }
+  .animate-indicator,
+  .dday-glow,
+  .animate-rise,
+  .animate-soft-fade {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

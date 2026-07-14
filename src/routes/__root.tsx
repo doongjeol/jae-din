@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "../components/ui/sonner";
+import { weddingConfig } from "../config/wedding";
 
 function NotFoundComponent() {
   return (
@@ -77,10 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "민준 ♡ 서연 결혼합니다" },
-      { name: "description", content: "저희 두 사람의 결혼식에 귀한 걸음 하시어 축복해 주시기를 바랍니다." },
-      { property: "og:title", content: "민준 ♡ 서연 결혼합니다" },
-      { property: "og:description", content: "2026년 9월 12일 토요일 오후 1시. 저희 결혼식에 초대합니다." },
+      { title: weddingConfig.meta.title },
+      { name: "description", content: weddingConfig.meta.description },
+      ...(weddingConfig.meta.noIndex ? [{ name: "robots", content: "noindex, nofollow" }] : []),
+      { property: "og:title", content: weddingConfig.meta.title },
+      { property: "og:description", content: weddingConfig.meta.description },
+      { property: "og:image", content: weddingConfig.meta.ogImage },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -122,6 +126,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Toaster position="bottom-center" />
     </QueryClientProvider>
   );
 }
