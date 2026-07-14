@@ -84,8 +84,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ...(weddingConfig.meta.noIndex ? [{ name: "robots", content: "noindex, nofollow" }] : []),
       { property: "og:title", content: weddingConfig.meta.title },
       { property: "og:description", content: weddingConfig.meta.description },
-      { property: "og:image", content: weddingConfig.meta.ogImage },
+      {
+        property: "og:image",
+        content: new URL(weddingConfig.meta.ogImage, weddingConfig.meta.url).toString(),
+      },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: weddingConfig.meta.url },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [

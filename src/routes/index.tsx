@@ -421,7 +421,7 @@ function AccountAccordion({ title, list }: { title: string; list: typeof WEDDING
 /* -------------------------------- Page ------------------------------- */
 
 function Invitation() {
-  const gallery = [g1, g2, g3, g4, g5, g6, g7, g8];
+  const gallery = [g4, g2, g3, g1, g5, g6, g7, g8];
   const [lightbox, setLightbox] = useState<number | null>(null);
   const d = WEDDING.date;
 

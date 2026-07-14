@@ -15,7 +15,7 @@ export const weddingConfig = {
   meta: {
     title: "이재훈 ♥ 김다인 결혼합니다",
     description: "2026년 11월 28일 토요일 오후 4시 10분. 저희 결혼식에 초대합니다.",
-    ogImage: "/og-thumbnail.jpg", // TODO: 800x400 썸네일 준비 후 교체
+    ogImage: "/og-thumbnail.jpg", // 1200x630, g8 사진 크롭
     url: "https://jae-din.cd8025.workers.dev",
     noIndex: true,
   },
@@ -25,16 +25,15 @@ export const weddingConfig = {
       name: "이재훈",
       nameEn: "Jaehoon",
       order: "차남", // 누나 1명 있음 (형제 중 둘째)
-      phone: "010-0000-0000", // TODO
+      phone: "010-6299-8984",
       father: {
         name: "이주형",
         deceased: true, // 이름 앞 꽃 아이콘 렌더링
-        account: { bank: "은행명", number: "000000-00-000000", holder: "박미경" }, // TODO: 계좌번호
       } as Person,
       mother: {
-        name: "박미경",
+        name: "박경미",
         deceased: false,
-        account: { bank: "은행명", number: "000000-00-000000", holder: "박미경" }, // TODO: 계좌번호
+        account: { bank: "은행명", number: "000000-00-000000", holder: "박경미" }, // TODO: 계좌번호
       } as Person,
       account: { bank: "은행명", number: "000000-00-000000", holder: "이재훈" }, // TODO
       // (옵션) kakaopayLink: 'https://qr.kakaopay.com/...',
@@ -43,7 +42,7 @@ export const weddingConfig = {
       name: "김다인",
       nameEn: "Dain",
       order: "차녀", // 오빠 1명 있음 (형제 중 둘째)
-      phone: "010-0000-0000", // TODO
+      phone: "010-2530-1122",
       father: {
         name: "김두현",
         deceased: false,
@@ -54,7 +53,7 @@ export const weddingConfig = {
         deceased: false,
         account: { bank: "은행명", number: "000000-00-000000", holder: "김하연" }, // TODO: 계좌번호
       } as Person,
-      account: { bank: "은행명", number: "000000-00-000000", holder: "김다인" }, // TODO
+      account: { bank: "국민은행", number: "444401-01-393737", holder: "김다인" },
     },
   },
 

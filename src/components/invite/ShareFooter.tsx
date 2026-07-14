@@ -11,23 +11,27 @@ async function shareToKakao() {
     toast("카카오톡 공유가 아직 설정되지 않았어요. 링크 복사를 이용해주세요.");
     return;
   }
-  const { meta, share } = weddingConfig;
-  const absoluteImage = new URL(meta.ogImage, meta.url).toString();
-  (window as any).kakao.Share.sendDefault({
-    objectType: "feed",
-    content: {
-      title: share.kakaoTitle,
-      description: share.kakaoDescription,
-      imageUrl: absoluteImage,
-      link: { mobileWebUrl: meta.url, webUrl: meta.url },
-    },
-    buttons: [
-      {
-        title: share.kakaoButtonText,
+  try {
+    const { meta, share } = weddingConfig;
+    const absoluteImage = new URL(meta.ogImage, meta.url).toString();
+    (window as any).Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: share.kakaoTitle,
+        description: share.kakaoDescription,
+        imageUrl: absoluteImage,
         link: { mobileWebUrl: meta.url, webUrl: meta.url },
       },
-    ],
-  });
+      buttons: [
+        {
+          title: share.kakaoButtonText,
+          link: { mobileWebUrl: meta.url, webUrl: meta.url },
+        },
+      ],
+    });
+  } catch {
+    toast("카카오톡 공유에 실패했어요. 링크 복사를 이용해주세요.");
+  }
 }
 
 export function ShareFooter() {

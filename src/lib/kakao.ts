@@ -1,8 +1,16 @@
-/** Kakao Maps / Share SDK loader — injects each script at most once. */
+/**
+ * Kakao Maps / Share SDK loader — injects each script at most once.
+ *
+ * NOTE: these are two different global objects with different casing —
+ * `window.kakao` (lowercase) is the Maps SDK from dapi.kakao.com,
+ * `window.Kakao` (capital K) is the unified JS SDK (Share/Login/Talk) from
+ * kakaocdn.net. Mixing them up means `Kakao.Share` silently doesn't exist.
+ */
 
 declare global {
   interface Window {
     kakao?: any;
+    Kakao?: any;
   }
 }
 
@@ -34,12 +42,12 @@ export function loadKakaoMapScript(): Promise<boolean> {
 /** Loads the Kakao JS SDK (for Share) and calls Kakao.init once. Resolves false if no key. */
 export function loadKakaoShareScript(): Promise<boolean> {
   if (!KAKAO_JS_KEY) return Promise.resolve(false);
-  if (shareInitDone && window.kakao?.isInitialized?.()) return Promise.resolve(true);
+  if (shareInitDone && window.Kakao?.isInitialized?.()) return Promise.resolve(true);
 
   return new Promise((resolve) => {
-    if (window.kakao && !window.kakao.maps) {
+    if (window.Kakao) {
       // kakao.min.js already present (e.g. from a previous share attempt)
-      if (!window.kakao.isInitialized?.()) window.kakao.init(KAKAO_JS_KEY);
+      if (!window.Kakao.isInitialized?.()) window.Kakao.init(KAKAO_JS_KEY);
       shareInitDone = true;
       resolve(true);
       return;
@@ -49,7 +57,7 @@ export function loadKakaoShareScript(): Promise<boolean> {
     script.integrity = "sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4";
     script.crossOrigin = "anonymous";
     script.onload = () => {
-      window.kakao.init(KAKAO_JS_KEY);
+      window.Kakao.init(KAKAO_JS_KEY);
       shareInitDone = true;
       resolve(true);
     };

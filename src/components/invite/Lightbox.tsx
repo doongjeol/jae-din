@@ -7,7 +7,7 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { EASE, useInteractionLock } from "./motion-shared";
 import { weddingConfig } from "@/config/wedding";
 
@@ -118,6 +118,23 @@ export function Lightbox({
             className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/80 backdrop-blur transition hover:bg-white/20"
           >
             <X className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="이전 사진"
+            className="absolute left-2 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white/80 backdrop-blur transition hover:bg-white/20 sm:left-4"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="다음 사진"
+            className="absolute right-2 top-1/2 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white/80 backdrop-blur transition hover:bg-white/20 sm:right-4"
+          >
+            <ChevronRight className="h-5 w-5" />
           </button>
 
           <motion.div
