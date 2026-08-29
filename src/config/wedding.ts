@@ -24,7 +24,7 @@ export const weddingConfig = {
     groom: {
       name: "이재훈",
       nameEn: "Jaehoon",
-      order: "차남", // 누나 1명 있음 (형제 중 둘째)
+      order: "아들", // 누나 1명 있음 (형제 중 둘째)
       phone: "010-6299-8984",
       father: {
         name: "이주형",
@@ -33,25 +33,25 @@ export const weddingConfig = {
       mother: {
         name: "박경미",
         deceased: false,
-        account: { bank: "은행명", number: "000000-00-000000", holder: "박경미" }, // TODO: 계좌번호
+        account: { bank: "신한은행", number: "110-047-666112", holder: "박경미" },
       } as Person,
-      account: { bank: "은행명", number: "000000-00-000000", holder: "이재훈" }, // TODO
+      account: { bank: "국민은행", number: "044202-04-215912", holder: "이재훈" },
       // (옵션) kakaopayLink: 'https://qr.kakaopay.com/...',
     },
     bride: {
       name: "김다인",
       nameEn: "Dain",
-      order: "차녀", // 오빠 1명 있음 (형제 중 둘째)
+      order: "딸", // 오빠 1명 있음 (형제 중 둘째)
       phone: "010-2530-1122",
       father: {
         name: "김두현",
         deceased: false,
-        account: { bank: "은행명", number: "000000-00-000000", holder: "김두현" }, // TODO: 계좌번호
+        account: { bank: "우리은행", number: "1002-584-000170", holder: "김두현" },
       } as Person,
       mother: {
         name: "김하연",
         deceased: false,
-        account: { bank: "은행명", number: "000000-00-000000", holder: "김하연" }, // TODO: 계좌번호
+        account: { bank: "우리은행", number: "1002-159-518429", holder: "김하연" },
       } as Person,
       account: { bank: "국민은행", number: "444401-01-393737", holder: "김다인" },
     },
