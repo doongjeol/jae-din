@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CalendarPlus, Link2, Share } from "lucide-react";
+import { CalendarPlus, Link2, MapPin, Share } from "lucide-react";
 import { toast } from "sonner";
 import { weddingConfig } from "@/config/wedding";
 import { loadKakaoShareScript } from "@/lib/kakao";
@@ -75,6 +75,15 @@ export function ShareFooter() {
       >
         일정 등록하기
         <CalendarPlus className="h-4 w-4" aria-hidden />
+      </motion.button>
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.98 }}
+        onClick={() => copy(weddingConfig.event.venue.address, "웨딩홀 주소가 복사되었습니다")}
+        className="flex w-full items-center justify-between rounded-xl border border-blush-deep/40 bg-white/60 px-5 py-3.5 text-sm text-foreground transition hover:bg-blush/40"
+      >
+        웨딩홀 주소 복사하기
+        <MapPin className="h-4 w-4" aria-hidden />
       </motion.button>
     </div>
   );
