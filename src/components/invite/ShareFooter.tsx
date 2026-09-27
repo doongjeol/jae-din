@@ -13,10 +13,13 @@ async function shareToKakao() {
     return;
   }
   try {
-    const { meta, share } = weddingConfig;
+    const { meta, share, event } = weddingConfig;
     const absoluteImage = new URL(meta.ogImage, meta.url).toString();
+    // location 템플릿: 카카오가 "위치 보기" 버튼을 자동으로 추가해 카카오맵으로 연결
     (window as any).Kakao.Share.sendDefault({
-      objectType: "feed",
+      objectType: "location",
+      address: event.venue.address,
+      addressTitle: `${event.venue.name} ${event.venue.hall}`,
       content: {
         title: share.kakaoTitle,
         description: share.kakaoDescription,
