@@ -58,7 +58,7 @@ export function ShareFooter() {
         onClick={() => copy(weddingConfig.meta.url, "청첩장 링크가 복사되었습니다")}
         className="flex w-full items-center justify-between rounded-xl bg-blush-deep/80 px-5 py-3.5 text-sm text-primary-foreground transition hover:opacity-90"
       >
-        청첩장 주소 복사하기
+        청첩장 링크 복사하기
         <Link2 className="h-4 w-4" aria-hidden />
       </motion.button>
       <motion.button
