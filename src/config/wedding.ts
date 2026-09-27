@@ -73,7 +73,7 @@ export const weddingConfig = {
       transport: {
         subway: "5호선 발산역 7번 출구 도보 3분",
         bus: "", // TODO: 버스 노선 확인
-        parking: "B4~F1 총 720대 동시 주차 가능, 2시간 무료 (외부 주차장 여유 확보)",
+        parking: "B4~F1 주차 가능, 2시간 무료, 30분당 2,000원 추가요금 (외부 주차장 여유 확보)",
       },
     },
   },
