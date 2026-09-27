@@ -107,7 +107,7 @@ function TransportRow({
         <Icon className="h-4 w-4" aria-hidden />
         {label}
       </p>
-      <p className="mt-3 text-[13px] leading-relaxed text-foreground/80">{text}</p>
+      <p className="mt-3 whitespace-pre-line text-[13px] leading-relaxed text-foreground/80">{text}</p>
     </div>
   );
 }

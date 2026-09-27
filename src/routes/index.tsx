@@ -489,7 +489,7 @@ function Invitation() {
           {/* ------- 풀폭 사진 한 장 ------- */}
           <Reveal>
             <img
-              src={g5}
+              src={g8}
               alt="웨딩 촬영 사진"
               loading="lazy"
               className="aspect-[3/4] w-full object-cover"
