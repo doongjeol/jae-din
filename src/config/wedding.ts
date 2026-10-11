@@ -66,7 +66,7 @@ export const weddingConfig = {
     dateLabel: "2026. 11. 28 SAT PM 4:10",
     venue: {
       name: "더뉴컨벤션웨딩",
-      hall: "5층",
+      hall: "5층 제니스홀",
       address: "서울 강서구 공항대로36길 57",
       lat: 37.5563586,
       lng: 126.8369448,
@@ -95,7 +95,7 @@ export const weddingConfig = {
 
   share: {
     kakaoTitle: "이재훈 ♥ 김다인 결혼합니다",
-    kakaoDescription: "11월 28일 토요일 오후 4시 10분 | 더뉴컨벤션웨딩 5층",
+    kakaoDescription: "11월 28일 토요일 오후 4시 10분 | 더뉴컨벤션웨딩 5층 제니스홀",
     kakaoButtonText: "청첩장 보기",
   },
 
