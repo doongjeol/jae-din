@@ -43,6 +43,7 @@ import {
 } from "@/components/invite/motion-shared";
 import { Splash } from "@/components/invite/Splash";
 import { ProgressNav } from "@/components/invite/ProgressNav";
+import { BgmToggle } from "@/components/invite/BgmToggle";
 import { Lightbox } from "@/components/invite/Lightbox";
 import { Countdown } from "@/components/invite/Countdown";
 import { LocationSection } from "@/components/invite/LocationSection";
@@ -449,6 +450,7 @@ function Invitation() {
       <InteractionLockProvider>
         <Splash monogram={`${WEDDING.groom.slice(1)} & ${WEDDING.bride.slice(1)}`} />
         <ProgressNav sections={NAV_SECTIONS} />
+        <BgmToggle />
 
         <main className="mx-auto min-h-screen max-w-[460px] bg-background text-foreground shadow-[var(--shadow-soft)]">
           <Hero />
