@@ -3,11 +3,14 @@ import {
   Bus,
   Car,
   ChevronDown,
+  ExternalLink,
+  Info,
   MapPin,
   Navigation,
   ParkingCircle,
   Train,
   TrainFront,
+  Utensils,
 } from "lucide-react";
 import { weddingConfig } from "@/config/wedding";
 import transitMap from "@/assets/transit-map.png";
@@ -174,14 +177,31 @@ function InfoRows({ rows, labelWidth = "w-16" }: { rows: readonly InfoRow[]; lab
 }
 
 /* 주차 상세 카드 */
-function ParkingTable({ rows }: { rows: readonly InfoRow[] }) {
+function ParkingTable({
+  rows,
+  link,
+}: {
+  rows: readonly InfoRow[];
+  link?: { label: string; url: string };
+}) {
   return (
     <div className="rounded-xl bg-white/60 px-4 py-1">
       <p className="flex items-center gap-1.5 pt-3 text-[13px] font-medium text-foreground">
         <ParkingCircle className="h-3.5 w-3.5 text-blush-deep" aria-hidden />
         주차 안내
       </p>
-      <InfoRows rows={rows} />
+      <InfoRows rows={rows} labelWidth="w-[4.5rem]" />
+      {link?.url && (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noreferrer"
+          className="-mt-1 ml-[calc(4.5rem+0.75rem)] inline-flex items-center gap-1 pb-3 text-[13px] text-blush-deep underline underline-offset-2"
+        >
+          {link.label}
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+        </a>
+      )}
     </div>
   );
 }
@@ -248,7 +268,7 @@ export function LocationSection() {
       <div className="mx-auto mt-10 max-w-sm divide-y divide-blush/70">
         <TransportGroup icon={Car} label="자차">
           <SubItem icon={Navigation} title="내비게이션" lines={[transport.car.navi]} />
-          {transport.car.parking.length > 0 && <ParkingTable rows={transport.car.parking} />}
+          {transport.car.parking.length > 0 && <ParkingTable rows={transport.car.parking} link={transport.car.parkingLink} />}
           {transport.car.routes.length > 0 && <RouteList routes={transport.car.routes} />}
         </TransportGroup>
 
@@ -274,6 +294,18 @@ export function LocationSection() {
                 </div>
               </div>
             )}
+          </TransportGroup>
+        )}
+
+        {venue.meal && (
+          <TransportGroup icon={Utensils} label="식사 안내">
+            <p className="text-[13px] leading-relaxed text-foreground/80">{venue.meal}</p>
+          </TransportGroup>
+        )}
+
+        {venue.etc.length > 0 && (
+          <TransportGroup icon={Info} label="기타 안내">
+            <InfoRows rows={venue.etc} labelWidth="w-[4.5rem]" />
           </TransportGroup>
         )}
       </div>

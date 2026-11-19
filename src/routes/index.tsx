@@ -462,7 +462,7 @@ function AccountAccordion({ title, list }: { title: string; list: typeof WEDDING
 
 function Invitation() {
   const gallery = [
-    g4, g2, g3, g1, g5, g6, g7, g8,
+    g4, heroImg, g2, g3, g1, g5, g6, g7, g8,
     p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
   ];
   const [lightbox, setLightbox] = useState<number | null>(null);
