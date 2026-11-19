@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   AnimatePresence,
   motion,
@@ -87,6 +87,29 @@ const NAV_SECTIONS = [
   { id: "location", label: "오시는 길" },
   { id: "gift", label: "마음 전하실 곳" },
 ];
+
+/* ----------------------- 예식 직전 모드 (D-1 ~ D-day) ----------------------- */
+/* 예식 전날 00:00(KST)부터 예식 당일 자정까지는 '오시는 길'을 맨 위로 올린다.
+ * 미리보기: ?mode=dday 로 강제 활성, ?mode=normal 로 강제 해제. */
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const WEDDING_DAY_START = new Date(`${weddingConfig.event.datetime.slice(0, 10)}T00:00:00+09:00`);
+const LOCATION_FIRST_FROM = new Date(WEDDING_DAY_START.getTime() - DAY_MS);
+const LOCATION_FIRST_UNTIL = new Date(WEDDING_DAY_START.getTime() + DAY_MS);
+
+function useLocationFirst() {
+  // SSR과 첫 렌더는 기본 순서로 맞추고(하이드레이션 불일치 방지), 마운트 후 판정.
+  // 스플래시(~0.9s)가 덮고 있어 순서 전환이 눈에 띄지 않는다.
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const mode = new URLSearchParams(window.location.search).get("mode");
+    if (mode === "dday") return setOn(true);
+    if (mode === "normal") return setOn(false);
+    const now = Date.now();
+    setOn(now >= LOCATION_FIRST_FROM.getTime() && now < LOCATION_FIRST_UNTIL.getTime());
+  }, []);
+  return on;
+}
 
 /* ------------------------------- Hero -------------------------------- */
 /* martinique 스타일: 풀스크린 사진 위에 상단 영문 이름, 하단 일시·장소 오버레이 */
@@ -444,15 +467,50 @@ function Invitation() {
   ];
   const [lightbox, setLightbox] = useState<number | null>(null);
   const d = WEDDING.date;
+  const locationFirst = useLocationFirst();
+  const navSections = useMemo(
+    () =>
+      locationFirst
+        ? [
+            NAV_SECTIONS.find((s) => s.id === "location")!,
+            ...NAV_SECTIONS.filter((s) => s.id !== "location"),
+          ]
+        : NAV_SECTIONS,
+    [locationFirst],
+  );
+
+  const locationSection = (
+    <section
+      id="location"
+      className={`bg-sand px-6 ${locationFirst ? "pb-24 pt-16" : "py-24"}`}
+    >
+      {locationFirst && (
+        <Reveal>
+          <p className="mb-10 text-center text-[13px] leading-relaxed text-blush-deep">
+            {d.getMonth() + 1}월 {d.getDate()}일 {weddingConfig.event.displayTime},
+            <br />
+            서울 강서구 발산역 7번출구
+            <br />
+            {WEDDING.venueName} {WEDDING.venueHall}에서 뵙겠습니다.
+          </p>
+        </Reveal>
+      )}
+      {!locationFirst && <SectionTitle title="Location" subtitle="오시는 길" />}
+      <Reveal delay={100}>
+        <LocationSection />
+      </Reveal>
+    </section>
+  );
 
   return (
     <MotionConfig reducedMotion="user">
       <InteractionLockProvider>
         <Splash monogram={`${WEDDING.groom.slice(1)} & ${WEDDING.bride.slice(1)}`} />
-        <ProgressNav sections={NAV_SECTIONS} />
+        <ProgressNav sections={navSections} />
         <BgmToggle />
 
         <main className="mx-auto min-h-screen max-w-[460px] bg-background text-foreground shadow-[var(--shadow-soft)]">
+          {locationFirst && locationSection}
           <Hero />
 
           {/* ------- 초대글: 흰 배경, 줄기 장식 + 성구 + 인사말 ------- */}
@@ -601,13 +659,7 @@ function Invitation() {
             </div>
           </section>
 
-          {/* ------- 오시는 길 ------- */}
-          <section id="location" className="bg-sand px-6 py-24">
-            <SectionTitle title="Location" subtitle="오시는 길" />
-            <Reveal delay={100}>
-              <LocationSection />
-            </Reveal>
-          </section>
+          {!locationFirst && locationSection}
 
           {/* ------- 마음 전하실 곳 ------- */}
           <section id="gift" className="bg-background px-6 py-24">

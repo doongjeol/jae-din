@@ -1,12 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-import { Bus, Car, MapPin, ParkingCircle, Train } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  Bus,
+  Car,
+  ChevronDown,
+  MapPin,
+  Navigation,
+  ParkingCircle,
+  Train,
+  TrainFront,
+} from "lucide-react";
 import { weddingConfig } from "@/config/wedding";
+import transitMap from "@/assets/transit-map.png";
 import { kakaoMapUrl, naverMapUrl, tmapAppUrl } from "@/lib/wedding-format";
 import { hasKakaoKey, loadKakaoMapScript } from "@/lib/kakao";
 import { useInViewOnce } from "@/components/invite/motion-shared";
 import { useClipboard } from "@/hooks/useClipboard";
 
 const { venue } = weddingConfig.event;
+const { transport } = venue;
 const hasCoords = (venue.lat as number) !== 0 || (venue.lng as number) !== 0;
 
 /** Renders the real Kakao map once the section scrolls into view (lazy SDK load); otherwise a static art placeholder. */
@@ -91,24 +102,110 @@ function DirectionButton({ label, onClick }: { label: string; onClick: () => voi
   );
 }
 
-/* martinique 스타일: 아이콘 + 초록 라벨 헤더, 아래 본문, 그룹 사이 헤어라인 */
-function TransportRow({
+/* 그룹 헤더(아이콘 + 라벨) 아래로 하위 항목을 묶는다 — 자차 / 대중교통 */
+function TransportGroup({
   icon: Icon,
   label,
-  text,
+  children,
 }: {
   icon: typeof Train;
   label: string;
-  text: string;
+  children: ReactNode;
 }) {
   return (
-    <div className="py-5">
-      <p className="flex items-center gap-2 text-[13px] text-blush-deep">
+    <div className="py-6">
+      <p className="flex items-center gap-2 text-[14px] font-medium text-blush-deep">
         <Icon className="h-4 w-4" aria-hidden />
         {label}
       </p>
-      <p className="mt-3 whitespace-pre-line text-[13px] leading-relaxed text-foreground/80">{text}</p>
+      <div className="mt-4 space-y-4">{children}</div>
     </div>
+  );
+}
+
+function SubItem({
+  icon: Icon,
+  title,
+  lines,
+  notes = [],
+}: {
+  icon?: typeof Train;
+  title: string;
+  lines: readonly string[];
+  /** 본문보다 옅게 보이는 보조 안내 */
+  notes?: readonly string[];
+}) {
+  return (
+    <div>
+      <p className="flex items-center gap-1.5 text-[13px] font-medium text-foreground">
+        {Icon && <Icon className="h-3.5 w-3.5 text-blush-deep" aria-hidden />}
+        {title}
+      </p>
+      <ul className="mt-1.5 space-y-1">
+        {lines.map((l) => (
+          <li key={l} className="text-[13px] leading-relaxed text-foreground/80">
+            {l}
+          </li>
+        ))}
+        {notes.map((l) => (
+          <li key={l} className="text-[12.5px] leading-relaxed text-foreground/55">
+            {l}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+type InfoRow = { label: string; value: string };
+
+/* 라벨 | 내용 행 목록 (주차·버스 공용) */
+function InfoRows({ rows, labelWidth = "w-16" }: { rows: readonly InfoRow[]; labelWidth?: string }) {
+  return (
+    <dl className="divide-y divide-blush/50">
+      {rows.map((r) => (
+        <div key={r.label} className="flex gap-3 py-2.5 text-[13px] leading-relaxed">
+          <dt className={`${labelWidth} shrink-0 text-muted-foreground`}>{r.label}</dt>
+          <dd className="whitespace-pre-line text-foreground/80">{r.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/* 주차 상세 카드 */
+function ParkingTable({ rows }: { rows: readonly InfoRow[] }) {
+  return (
+    <div className="rounded-xl bg-white/60 px-4 py-1">
+      <p className="flex items-center gap-1.5 pt-3 text-[13px] font-medium text-foreground">
+        <ParkingCircle className="h-3.5 w-3.5 text-blush-deep" aria-hidden />
+        주차 안내
+      </p>
+      <InfoRows rows={rows} />
+    </div>
+  );
+}
+
+/* 방면별 경로: 내용이 길어 접어 두고 탭하면 펼친다 */
+function RouteList({ routes }: { routes: readonly InfoRow[] }) {
+  return (
+    <details className="group rounded-xl bg-white/60 px-4">
+      <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-[13px] font-medium text-foreground [&::-webkit-details-marker]:hidden">
+        차량 방면별 오시는 길
+        <ChevronDown
+          className="h-4 w-4 text-blush-deep transition-transform group-open:rotate-180"
+          aria-hidden
+        />
+      </summary>
+      <ul className="space-y-3 border-t border-blush/50 pb-4 pt-3">
+        {routes.map((r) => (
+          <li key={r.label} className="text-[13px] leading-relaxed">
+            <p className="text-foreground">{r.label}</p>
+            <p className="mt-0.5 whitespace-pre-line text-foreground/75">{r.value}</p>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
 
@@ -149,12 +246,35 @@ export function LocationSection() {
       </div>
 
       <div className="mx-auto mt-10 max-w-sm divide-y divide-blush/70">
-        {venue.transport.subway && (
-          <TransportRow icon={Train} label="지하철" text={venue.transport.subway} />
-        )}
-        {venue.transport.bus && <TransportRow icon={Bus} label="버스" text={venue.transport.bus} />}
-        {venue.transport.parking && (
-          <TransportRow icon={ParkingCircle} label="주차" text={venue.transport.parking} />
+        <TransportGroup icon={Car} label="자차">
+          <SubItem icon={Navigation} title="내비게이션" lines={[transport.car.navi]} />
+          {transport.car.parking.length > 0 && <ParkingTable rows={transport.car.parking} />}
+          {transport.car.routes.length > 0 && <RouteList routes={transport.car.routes} />}
+        </TransportGroup>
+
+        {(transport.subway.length > 0 || transport.bus.length > 0) && (
+          <TransportGroup icon={Train} label="대중교통">
+            <img
+              src={transitMap}
+              alt="발산역 사거리 기준 더뉴컨벤션웨딩홀 약도: 발산역 7번·8번 출구에서 남쪽으로 내려와 이대병원·메가커피 사이 골목 안쪽"
+              width={1200}
+              height={769}
+              loading="lazy"
+              className="w-full rounded-xl bg-white"
+            />
+            {transport.subway.length > 0 && <SubItem icon={TrainFront} title="지하철" lines={transport.subway} notes={transport.subwayWalk} />}
+            {transport.bus.length > 0 && (
+              <div>
+                <p className="flex items-center gap-1.5 text-[13px] font-medium text-foreground">
+                  <Bus className="h-3.5 w-3.5 text-blush-deep" aria-hidden />
+                  버스 <span className="font-normal text-muted-foreground">(발산역 하차)</span>
+                </p>
+                <div className="mt-1">
+                  <InfoRows rows={transport.bus} labelWidth="w-[4.5rem]" />
+                </div>
+              </div>
+            )}
+          </TransportGroup>
         )}
       </div>
     </>
