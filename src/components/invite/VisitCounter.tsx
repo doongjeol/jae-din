@@ -42,7 +42,7 @@ export function VisitCounter() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ delay: 1.2, duration: 0.4 }}
-          className="fixed right-3 top-16 z-50 rounded-2xl border border-blush bg-white/95 px-4 py-3 text-foreground shadow-[0_4px_18px_rgba(0,0,0,0.14)] backdrop-blur"
+          className="fixed right-[max(0.75rem,calc(50vw-230px+0.75rem))] top-16 z-50 rounded-2xl border border-blush bg-white/95 px-4 py-3 text-foreground shadow-[0_4px_18px_rgba(0,0,0,0.14)] backdrop-blur"
           role="status"
           aria-live="polite"
         >
