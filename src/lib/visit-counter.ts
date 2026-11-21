@@ -63,6 +63,28 @@ async function read(slug: string): Promise<number | null> {
   }
 }
 
+/** 대시보드에 day-YYYYMMDD 카운터를 만들어 둔 기간 (한국 시간) */
+const FIRST_DAY = "20261121";
+const LAST_DAY = "20261205";
+
+/** 날짜별 방문 수 (최신순). 자정이 지나도 그날 카운터에 그대로 남아 있다. */
+export async function readDailyHistory(): Promise<{ day: string; count: number | null }[]> {
+  const today = kstDayKey();
+  const end = today < LAST_DAY ? today : LAST_DAY;
+  const days: string[] = [];
+  const cursor = new Date(
+    `${FIRST_DAY.slice(0, 4)}-${FIRST_DAY.slice(4, 6)}-${FIRST_DAY.slice(6)}T00:00:00Z`,
+  );
+  for (;;) {
+    const key = cursor.toISOString().slice(0, 10).replace(/-/g, "");
+    if (key > end) break;
+    days.push(key);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  const counts = await Promise.all(days.map((d) => read(`day-${d}`)));
+  return days.map((day, i) => ({ day, count: counts[i] })).reverse();
+}
+
 export async function readVisitCounts() {
   const [today, total] = await Promise.all([read(`day-${kstDayKey()}`), read(TOTAL_SLUG)]);
   return { today, total };

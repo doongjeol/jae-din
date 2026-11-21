@@ -1,9 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { RotateCw, X } from "lucide-react";
-import { markOwnerDevice, readVisitCounts, recordVisit } from "@/lib/visit-counter";
+import { ChevronDown, RotateCw, X } from "lucide-react";
+import {
+  markOwnerDevice,
+  readDailyHistory,
+  readVisitCounts,
+  recordVisit,
+} from "@/lib/visit-counter";
 
 type Counts = { today: number | null; total: number | null };
+type History = { day: string; count: number | null }[];
+
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+function dayLabel(key: string) {
+  const m = Number(key.slice(4, 6));
+  const d = Number(key.slice(6));
+  const w = new Date(`${key.slice(0, 4)}-${key.slice(4, 6)}-${key.slice(6)}T12:00:00Z`).getUTCDay();
+  return `${m}/${d} (${WEEKDAYS[w]})`;
+}
 
 /**
  * 숨겨진 TODAY 카운터.
@@ -14,12 +28,25 @@ export function VisitCounter() {
   const [open, setOpen] = useState(false);
   const [counts, setCounts] = useState<Counts | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<History | null>(null);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (withHistory = false) => {
     setLoading(true);
-    setCounts(await readVisitCounts());
+    const [c, h] = await Promise.all([
+      readVisitCounts(),
+      withHistory ? readDailyHistory() : Promise.resolve(null),
+    ]);
+    setCounts(c);
+    if (h) setHistory(h);
     setLoading(false);
   }, []);
+
+  const toggleHistory = () => {
+    const next = !showHistory;
+    setShowHistory(next);
+    if (next) void refresh(true);
+  };
 
   useEffect(() => {
     const isSecret = new URLSearchParams(window.location.search).has("today");
@@ -59,7 +86,7 @@ export function VisitCounter() {
             <div className="flex flex-col gap-1">
               <button
                 type="button"
-                onClick={() => void refresh()}
+                onClick={() => void refresh(showHistory)}
                 aria-label="새로고침"
                 className="grid h-6 w-6 place-items-center rounded-full text-muted-foreground hover:bg-blush/40"
               >
@@ -75,6 +102,31 @@ export function VisitCounter() {
               </button>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={toggleHistory}
+            aria-expanded={showHistory}
+            className="mt-2 flex w-full items-center justify-center gap-1 border-t border-blush/60 pt-2 text-[11px] text-muted-foreground"
+          >
+            날짜별 기록
+            <ChevronDown
+              className={`h-3 w-3 transition-transform ${showHistory ? "rotate-180" : ""}`}
+            />
+          </button>
+          {showHistory && (
+            <ul className="mt-1.5 max-h-56 space-y-1 overflow-y-auto text-[12px]">
+              {history == null ? (
+                <li className="text-center text-muted-foreground">불러오는 중…</li>
+              ) : (
+                history.map(({ day, count }) => (
+                  <li key={day} className="flex justify-between gap-6 tabular-nums">
+                    <span className="text-muted-foreground">{dayLabel(day)}</span>
+                    <span>{fmt(count)}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
         </motion.div>
       )}
     </AnimatePresence>
