@@ -44,6 +44,7 @@ import {
 import { Splash } from "@/components/invite/Splash";
 import { ProgressNav } from "@/components/invite/ProgressNav";
 import { BgmToggle } from "@/components/invite/BgmToggle";
+import { VisitCounter } from "@/components/invite/VisitCounter";
 import { Lightbox } from "@/components/invite/Lightbox";
 import { Countdown } from "@/components/invite/Countdown";
 import { LocationSection } from "@/components/invite/LocationSection";
@@ -508,6 +509,7 @@ function Invitation() {
         <Splash monogram={`${WEDDING.groom.slice(1)} & ${WEDDING.bride.slice(1)}`} />
         <ProgressNav sections={navSections} />
         <BgmToggle />
+        <VisitCounter />
 
         <main className="mx-auto min-h-screen max-w-[460px] bg-background text-foreground shadow-[var(--shadow-soft)]">
           {locationFirst && locationSection}
