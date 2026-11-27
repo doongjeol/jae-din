@@ -474,7 +474,8 @@ function Invitation() {
       locationFirst
         ? [
             NAV_SECTIONS.find((s) => s.id === "location")!,
-            ...NAV_SECTIONS.filter((s) => s.id !== "location"),
+            NAV_SECTIONS.find((s) => s.id === "gift")!,
+            ...NAV_SECTIONS.filter((s) => s.id !== "location" && s.id !== "gift"),
           ]
         : NAV_SECTIONS,
     [locationFirst],
@@ -503,6 +504,39 @@ function Invitation() {
     </section>
   );
 
+  // 예식 직전 모드에선 오시는 길 바로 밑(기타 안내 다음)으로 함께 올라간다.
+  const giftAndContact = (
+    <>
+      {/* ------- 마음 전하실 곳 ------- */}
+      <section id="gift" className="bg-background px-6 py-24">
+        <SectionTitle title="Account" subtitle="마음 전하실 곳" />
+        <Reveal>
+          <p className="mx-auto mb-8 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
+            소중한 축하를 보내주셔서 감사드리며,
+            <br />
+            따뜻한 마음에 깊이 감사드립니다.
+          </p>
+        </Reveal>
+        <div className="mx-auto max-w-sm space-y-3">
+          <Reveal delay={100}>
+            <AccountAccordion title="신랑측에게" list={WEDDING.accounts.groom} />
+          </Reveal>
+          <Reveal delay={200}>
+            <AccountAccordion title="신부측에게" list={WEDDING.accounts.bride} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ------- 연락하기 ------- */}
+      <section id="contact" className="bg-white px-6 py-24">
+        <SectionTitle title="Contact" subtitle="연락하기" />
+        <Reveal delay={100}>
+          <ContactSection />
+        </Reveal>
+      </section>
+    </>
+  );
+
   return (
     <MotionConfig reducedMotion="user">
       <InteractionLockProvider>
@@ -513,6 +547,7 @@ function Invitation() {
 
         <main className="mx-auto min-h-screen max-w-[460px] bg-background text-foreground shadow-[var(--shadow-soft)]">
           {locationFirst && locationSection}
+          {locationFirst && giftAndContact}
           <Hero />
 
           {/* ------- 초대글: 흰 배경, 줄기 장식 + 성구 + 인사말 ------- */}
@@ -663,33 +698,7 @@ function Invitation() {
 
           {!locationFirst && locationSection}
 
-          {/* ------- 마음 전하실 곳 ------- */}
-          <section id="gift" className="bg-background px-6 py-24">
-            <SectionTitle title="Account" subtitle="마음 전하실 곳" />
-            <Reveal>
-              <p className="mx-auto mb-8 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
-                소중한 축하를 보내주셔서 감사드리며,
-                <br />
-                따뜻한 마음에 깊이 감사드립니다.
-              </p>
-            </Reveal>
-            <div className="mx-auto max-w-sm space-y-3">
-              <Reveal delay={100}>
-                <AccountAccordion title="신랑측에게" list={WEDDING.accounts.groom} />
-              </Reveal>
-              <Reveal delay={200}>
-                <AccountAccordion title="신부측에게" list={WEDDING.accounts.bride} />
-              </Reveal>
-            </div>
-          </section>
-
-          {/* ------- 연락하기 ------- */}
-          <section id="contact" className="bg-white px-6 py-24">
-            <SectionTitle title="Contact" subtitle="연락하기" />
-            <Reveal delay={100}>
-              <ContactSection />
-            </Reveal>
-          </section>
+          {!locationFirst && giftAndContact}
 
           {/* ------- 엔딩: 풀블리드 사진 + 감사 문구 오버레이 ------- */}
           <section className="relative">
