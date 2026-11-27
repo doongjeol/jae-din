@@ -84,9 +84,14 @@ export function useInViewOnce<T extends HTMLElement>(threshold = 0.15) {
       setShown(true);
       return;
     }
+    // 화면보다 훨씬 긴 요소(오시는 길 전체 등)는 비율 기준(threshold)을 영영 못 채울 수 있다.
+    // 그래서 "비율을 넘거나, 화면에 120px 이상 들어오면" 보이는 것으로 친다.
     const io = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
+        const visiblePx = e.intersectionRect.height;
+        const enough = e.intersectionRatio >= threshold || visiblePx >= 120;
+        if (!enough) return;
         if (lockedRef.current) {
           pendingRef.current = true;
         } else {
@@ -94,7 +99,7 @@ export function useInViewOnce<T extends HTMLElement>(threshold = 0.15) {
           io.disconnect();
         }
       },
-      { threshold },
+      { threshold: [0, 0.02, 0.05, 0.1, threshold] },
     );
     io.observe(el);
     return () => io.disconnect();
