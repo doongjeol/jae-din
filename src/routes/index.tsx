@@ -498,7 +498,7 @@ function Invitation() {
       )}
       {!locationFirst && <SectionTitle title="Location" subtitle="오시는 길" />}
       <Reveal delay={100}>
-        <LocationSection />
+        <LocationSection eagerMap={locationFirst} />
       </Reveal>
     </section>
   );

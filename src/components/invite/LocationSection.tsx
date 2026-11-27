@@ -24,27 +24,43 @@ const { transport } = venue;
 const hasCoords = (venue.lat as number) !== 0 || (venue.lng as number) !== 0;
 
 /** Renders the real Kakao map once the section scrolls into view (lazy SDK load); otherwise a static art placeholder. */
-function VenueMap() {
+function VenueMap({ eager = false }: { eager?: boolean }) {
   const { ref, shown } = useInViewOnce<HTMLDivElement>(0.1);
   const mapElRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
+  // 지도가 첫 화면에 있을 땐(eager) 스크롤 감지를 기다리지 않고 바로 그린다.
+  // 일부 모바일 웹뷰(카카오톡 인앱 등)는 스크롤 전까지 IntersectionObserver가 안 불린다.
+  const start = eager || shown;
 
   useEffect(() => {
-    if (!shown || !hasKakaoKey() || !hasCoords) return;
+    if (!start || !hasKakaoKey() || !hasCoords) return;
     let cancelled = false;
+    let ro: ResizeObserver | undefined;
     loadKakaoMapScript().then((ok) => {
-      if (!ok || cancelled || !mapElRef.current) return;
+      const el = mapElRef.current;
+      if (!ok || cancelled || !el) return;
       const { kakao } = window as any;
       const center = new kakao.maps.LatLng(venue.lat, venue.lng);
-      const map = new kakao.maps.Map(mapElRef.current, { center, level: 3, draggable: false });
+      const map = new kakao.maps.Map(el, { center, level: 3, draggable: false });
       map.setZoomable(false);
       new kakao.maps.Marker({ position: center, map });
+      // 등장 애니메이션·주소창 변화로 컨테이너 크기가 바뀌면 타일을 다시 그린다.
+      const relayout = () => {
+        map.relayout();
+        map.setCenter(center);
+      };
+      if (typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(relayout);
+        ro.observe(el);
+      }
+      setTimeout(relayout, 800);
       setReady(true);
     });
     return () => {
       cancelled = true;
+      ro?.disconnect();
     };
-  }, [shown]);
+  }, [start]);
 
   const openInKakaoMap = () => window.open(kakaoMapUrl(venue.name), "_blank", "noreferrer");
 
@@ -229,7 +245,7 @@ function RouteList({ routes }: { routes: readonly InfoRow[] }) {
   );
 }
 
-export function LocationSection() {
+export function LocationSection({ eagerMap = false }: { eagerMap?: boolean }) {
   const { copy } = useClipboard();
 
   return (
@@ -249,7 +265,7 @@ export function LocationSection() {
         </div>
       </div>
 
-      <VenueMap />
+      <VenueMap eager={eagerMap} />
 
       <div className="mx-auto mt-4 flex max-w-sm gap-2">
         <DirectionButton label="카카오맵" onClick={() => window.open(kakaoMapUrl(venue.name), "_blank", "noreferrer")} />
