@@ -495,9 +495,9 @@ function Invitation() {
             <br />
             {WEDDING.venueName} {WEDDING.venueHall}에서 뵙겠습니다.
             <span className="mt-3 block text-muted-foreground">
-              조금 늦으셔도 괜찮으니,
+              늦으셔도 괜찮으니,
               <br />
-              서두르지 마시고 안전한 걸음으로 와주세요.
+              안전하게 조심히 걸음해주세요.
             </span>
           </p>
         </Reveal>
